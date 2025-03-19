@@ -9,7 +9,7 @@ export async function POST(req) {
         const API_ID = Number(process.env.TELEGRAM_API_ID);
         const API_HASH = process.env.TELEGRAM_API_HASH;
         const STRING_SESSION = process.env.TELEGRAM_SESSION;
-        const BOT_USERNAME = process.env.ESP32_BOT_USERNAME; // The ESP32 bot username
+        const BOT_USERNAME = process.env.ESP32_BOT_USERNAME;
 
         console.log("Sending command:", command);
 
@@ -17,16 +17,16 @@ export async function POST(req) {
             connectionRetries: 5,
         });
 
-        await client.start(); // Ensure the userbot is connected
+        await client.start(); 
 
-        // Send command as a message to the ESP32 bot
+        
         await client.sendMessage(BOT_USERNAME, { message: command });
 
-        // Fetch recent messages from the chat
+        
         const messages = await client.getMessages(BOT_USERNAME, { limit:2 });
         console.log("Received messages:", messages.map(msg => msg.message));
 
-        // Find the most recent temperature and humidity message
+        
         let temperature = "--";
         let humidity = "--";
 

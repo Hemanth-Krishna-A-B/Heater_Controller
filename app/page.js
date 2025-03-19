@@ -6,9 +6,8 @@ export default function Home() {
     const [status, setStatus] = useState("");
     const [temperature, setTemperature] = useState("--");
     const [humidity, setHumidity] = useState("--");
-    const [brightness, setBrightness] = useState(128);
+    const [brightness, setBrightness] = useState(75);
 
-    // Function to send command and fetch data
     const sendCommand = async (command) => {
         setStatus(`Sending '${command}' command...`);
         try {
@@ -21,7 +20,6 @@ export default function Home() {
             const data = await response.json();
             if (data.success) {
                 setStatus(`Command '${command}' sent successfully!`);
-
                 if (data.temperature && data.humidity) {
                     setTemperature(data.temperature);
                     setHumidity(data.humidity);
@@ -34,20 +32,17 @@ export default function Home() {
         }
     };
 
-    // Function to fetch sensor data every 5 seconds
     useEffect(() => {
         const fetchData = async () => {
-            await sendCommand("temp"); // Request temperature and humidity
+            await sendCommand("temp"); 
         };
 
-        fetchData(); // Initial fetch
-        const interval = setInterval(fetchData, 8000); // Auto-refresh every 5 seconds
-
-        return () => clearInterval(interval); // Cleanup interval on unmount
+        fetchData(); 
+        const interval = setInterval(fetchData, 8000); 
+        return () => clearInterval(interval);
     }, []);
 
-    // Function to set LED brightness
-    const setLedBrightness = async () => {
+    const setHeaterTemperature = async () => {
         await sendCommand(`brightness ${brightness}`);
     };
 
@@ -57,10 +52,10 @@ export default function Home() {
             
             <div className={styles.sensorData}>
                 <h2>Real-time Sensor Data</h2>
-                <p><strong>Temperature:</strong> {temperature} </p>
-                <p><strong>Humidity:</strong> {humidity} </p>
+                <p><strong>Temperature:</strong> {temperature}°C</p>
+                <p><strong>Humidity:</strong> {humidity}%</p>
             </div>
-            
+
             <div className={styles.controlButtons}>
                 <button onClick={() => sendCommand("on")} className={`${styles.btn} ${styles.onBtn}`}>
                     Turn ON
@@ -69,7 +64,7 @@ export default function Home() {
                     Turn OFF
                 </button>
             </div>
-            
+
             <div className={styles.brightnessControl}>
                 <h2>Set Heater Temperature</h2>
                 <input 
@@ -80,13 +75,12 @@ export default function Home() {
                     onChange={(e) => setBrightness(e.target.value)}
                     className={styles.slider}
                 />
-                <p>Temperature: {brightness}</p>
-                <button onClick={setLedBrightness} className={`${styles.btn} ${styles.brightnessBtn}`}>
+                <p>Temperature: {brightness}°C</p>
+                <button onClick={setHeaterTemperature} className={`${styles.btn} ${styles.brightnessBtn}`}>
                     Set Temperature
                 </button>
             </div>
-    
+
         </div>
     );
 }
-
